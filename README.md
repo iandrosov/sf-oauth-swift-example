@@ -1,2 +1,2 @@
 # sf-oauth-swift-example
-Salesforce OAuth connection in Serve-Side Swift deploy on Heroku
+Salesforce OAuth connection for REST API in Serve-Side Vaport & Swift web app example deploy on Heroku
