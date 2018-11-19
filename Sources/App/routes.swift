@@ -17,4 +17,10 @@ public func routes(_ router: Router) throws {
     router.get("todos", use: todoController.index)
     router.post("todos", use: todoController.create)
     router.delete("todos", Todo.parameter, use: todoController.delete)
+    
+    // Start Salesforce OAuth call routes
+    let authController = AuthDanceController()
+    router.get("sfauth", use: authController.sfauth)
+    router.get("authresult", use: authController.sfcallback)
+    
 }
