@@ -19,15 +19,27 @@ final class AuthDanceController {
         // Send the HTTP request, fetching a response
         //let httpRes = try client.send(httpReq).wait()
         //print(httpRes) // HTTPResponse
+
+        //let httpReq = Request(http: .GET, using: "https://login.salesforce.com/services/oauth2/authorize")
+        let myurl : String = "https://login.salesforce.com/services/oauth2/authorize"
+        ///req.http.urlString = myurl
         
-        
+        let params = [
+            "response_type" : "code", // token
+            "client_id" : "3MVG9yZ.WNe6byQDinV4pEtYbk.XKrK3LwCNZtKCJ9lKnd6keoaNjuNXu7i3EBK_lLzNSZnXAkQE.2gw4xFZn",
+            "redirect_uri" : "https://localhost:5000/oauth/_callback",
+            "prompt" : "login consent",
+            "display" : "page",
+            "state" : "UC115" ] // touch
+
         // Creates a generic Client
         let client = try req.client()
         //let req: Request
-        let res = try client.send(req)
-        print(res) // Future<Response>
+        //let res = client.send(req)
+        let res = client.get(myurl)
+        print(res) // Future<Response>T##url: URLRepresentable##URLRepresentable
         
-        return "hello"
+        return "authresult"
     }
     
     func sfcallback(_ req: Request) throws -> String {
