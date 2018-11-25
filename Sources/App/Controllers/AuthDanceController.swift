@@ -9,7 +9,7 @@ import Vapor
 
 final class AuthDanceController {
     
-    func sfauth(_ req: Request) throws -> String {
+    func sfauth(_ req: Request) throws -> Future<Response> {
         //return try req.make("hello")
         // Connect a new client to the supplied hostname.
         //let client = try HTTPClient.connect(hostname: "vapor.codes", on: ...).wait()
@@ -21,7 +21,7 @@ final class AuthDanceController {
         //print(httpRes) // HTTPResponse
 
         //let httpReq = Request(http: .GET, using: "https://login.salesforce.com/services/oauth2/authorize")
-        let myurl : String = "https://login.salesforce.com/services/oauth2/authorize"
+        let myurl : String = "https://login.salesforce.com/services/oauth2/authorize?response_type=code&client_id=3MVG9yZ.WNe6byQDinV4pEtYbk.XKrK3LwCNZtKCJ9lKnd6keoaNjuNXu7i3EBK_lLzNSZnXAkQE.2gw4xFZn&redirect_uri=https://localhost:8080/authresult&display=page"
         ///req.http.urlString = myurl
         
         let params = [
@@ -39,7 +39,8 @@ final class AuthDanceController {
         let res = client.get(myurl)
         print(res) // Future<Response>T##url: URLRepresentable##URLRepresentable
         
-        return "authresult"
+        //return "authresult"
+        return Future.map(on: req) {return req.redirect(to: myurl)}
     }
     
     func sfcallback(_ req: Request) throws -> String {
