@@ -8,7 +8,7 @@
 import Vapor
 
 final class AuthDanceController {
-    
+    // construct OAuth URL with parameters and strat auth flow
     func sfauth(_ req: Request) throws -> Future<Response> {
         //return try req.make("hello")
         // Connect a new client to the supplied hostname.
@@ -23,7 +23,7 @@ final class AuthDanceController {
         //let httpReq = Request(http: .GET, using: "https://login.salesforce.com/services/oauth2/authorize")
         let myurl : String = "https://login.salesforce.com/services/oauth2/authorize?response_type=code&client_id=3MVG9yZ.WNe6byQDinV4pEtYbk.XKrK3LwCNZtKCJ9lKnd6keoaNjuNXu7i3EBK_lLzNSZnXAkQE.2gw4xFZn&redirect_uri=https://localhost:8080/authresult&display=page"
         ///req.http.urlString = myurl
-        
+       /*
         let params = [
             "response_type" : "code", // token
             "client_id" : "3MVG9yZ.WNe6byQDinV4pEtYbk.XKrK3LwCNZtKCJ9lKnd6keoaNjuNXu7i3EBK_lLzNSZnXAkQE.2gw4xFZn",
@@ -31,19 +31,24 @@ final class AuthDanceController {
             "prompt" : "login consent",
             "display" : "page",
             "state" : "UC115" ] // touch
-
+         */
         // Creates a generic Client
-        let client = try req.client()
-        //let req: Request
+        //let client = try req.client()
         //let res = client.send(req)
-        let res = client.get(myurl)
-        print(res) // Future<Response>T##url: URLRepresentable##URLRepresentable
+        //let res = client.get(myurl)
+        //print(res) // Future<Response>T##url: URLRepresentable##URLRepresentable
         
         //return "authresult"
         return Future.map(on: req) {return req.redirect(to: myurl)}
     }
     
     func sfcallback(_ req: Request) throws -> String {
+        print("### TEST: ")
+        print(req)
+        
+        //let client = try req.client()
+        //let res = client.post(<#T##url: URLRepresentable##URLRepresentable#>, headers: <#T##HTTPHeaders#>, beforeSend: <#T##(Request) throws -> ()#>)
+        
         return "Hello, Salesforce OAuth!"
     }
 }
