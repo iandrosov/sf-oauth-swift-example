@@ -44,10 +44,14 @@ final class AuthDanceController {
         var headers = HTTPHeaders()
         headers.add(name: "Content-Type", value: "application/json")
         
+        //let drop = Droplet()
+        //let apiResponse = try drop.client.get("https://api.com", query: ["q": queryString])
+        
         // Connect a new client to the supplied hostname.
         //let client = try req.client()
-        let client = try HTTPClient.connect(hostname: urlString, on: Worker).wait()
+        let client = try HTTPClient.connect(hostname: urlString, on: ...).wait()
         print(client) // HTTPClient
+        
         // Create an HTTP request: GET /
         let httpReq = HTTPRequest(method: .POST, url: urlString)
         
