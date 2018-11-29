@@ -32,22 +32,49 @@ final class AuthDanceController {
             "display" : "page",
             "state" : "UC115" ] // touch
          */
-        // Creates a generic Client
-        //let client = try req.client()
-        //let res = client.send(req)
-        //let res = client.get(myurl)
-        //print(res) // Future<Response>T##url: URLRepresentable##URLRepresentable
-        
-        //return "authresult"
+
         return Future.map(on: req) {return req.redirect(to: myurl)}
     }
     
     func sfcallback(_ req: Request) throws -> String {
         print("### TEST: ")
         print(req)
+        // Assemble call to get access token
+        let urlString = "https://login.salesforce.com/services/oauth2/token"
+        var headers = HTTPHeaders()
+        headers.add(name: "Content-Type", value: "application/json")
         
-        //let client = try req.client()
-        //let res = client.post(<#T##url: URLRepresentable##URLRepresentable#>, headers: <#T##HTTPHeaders#>, beforeSend: <#T##(Request) throws -> ()#>)
+        // Connect a new client to the supplied hostname.
+        let client = try req.client() //try HTTPClient.connect(hostname: "vapor.codes", on: ...).wait()
+        print(client) // HTTPClient
+        // Create an HTTP request: GET /
+        let httpReq = HTTPRequest(method: .POST, url: urlString)
+        // Send the HTTP request, fetching a response
+        let httpRes = try client.send(httpReq).wait()
+        print(httpRes) // HTTPResponse
+        
+        /**
+        let loginRequest = ["grant_type" : "authorization_code",
+    "client_id" : "3MVG9yZ.WNe6byQDinV4pEtYbk.XKrK3LwCNZtKCJ9lKnd6keoaNjuNXu7i3EBK_lLzNSZnXAkQE.2gw4xFZn",
+            "client_secret" : "",
+            "redirect_uri" : "",
+            "code" : ""]
+        
+        return try req.client().post(urlString, headers: headers, beforeSend: { loginReq in
+            
+            // Encode Content before Request is sent
+            return try loginReq.content.encode(loginRequest)
+        
+        }).map(to: HTTPResponseStatus.self) { response in
+    
+            let decoded = try response.content.syncDecode(APIAccessResponse.self)
+    
+            print("token:\(decoded.token)")
+    
+            //return LoginSession(userID: user.userID, userToken: UUID().uuidString, accessToken: decoded.token)
+    
+        }
+    **/
         
         return "Hello, Salesforce OAuth!"
     }
