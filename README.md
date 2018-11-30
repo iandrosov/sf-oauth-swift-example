@@ -1,5 +1,7 @@
 # sf-oauth-swift-example
-Salesforce OAuth connection for REST API in Serve-Side Vaport & Swift web app example deploy on Heroku
+Salesforce OAuth Swift connector for REST API developed in Swift & Serve-Side Vapor as web app example that can run local.
+
+This example does not include XCode project, that can be built with Vapor toolbelt.
 
 # This is work in progress
 
