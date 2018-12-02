@@ -6,6 +6,7 @@
 //
 
 import Vapor
+import Alamofire
 
 final class AuthDanceController {
     
@@ -49,7 +50,7 @@ final class AuthDanceController {
         return Future.map(on: req) {return req.redirect(to: myurl)}
     }
     
-    func sfcallback(_ req: Request) throws -> String {
+    func sfcallback(_ req: Request) throws -> Future<Response> {
         print("### TEST: ")
         print(req)
         let flags = try req.query.decode(SFAuthCode.self)
@@ -59,21 +60,52 @@ final class AuthDanceController {
         
         
         // Assemble call to get access token
-        let urlString = "https://login.salesforce.com/services/oauth2/token"
-        var headers = HTTPHeaders()
-        headers.add(name: "Content-Type", value: "application/json")
+        //let urlString = "https://login.salesforce.com/services/oauth2/token"
+        //var headers = HTTPHeaders()
+        //headers.add(name: "Content-Type", value: "application/json")
         
-        let tokenRequest = SFTokenRequest(grant_type: "authorization_code",
-        client_id: "3MVG9yZ.WNe6byQDinV4pEtYbk.XKrK3LwCNZtKCJ9lKnd6keoaNjuNXu7i3EBK_lLzNSZnXAkQE.2gw4xFZn",
-        client_secret: "8219049706333485472",
-        redirect_uri: "https://localhost:8080/authresult",
-        code: authCode!)
-        let res = try req.client().post(urlString) { loginReq in
-            // encode the loginRequest before sending
-            try loginReq.content.encode(tokenRequest)
+        //let tokenRequest = SFTokenRequest(grant_type: "authorization_code",
+        //client_id: "3MVG9yZ.WNe6byQDinV4pEtYbk.XKrK3LwCNZtKCJ9lKnd6keoaNjuNXu7i3EBK_lLzNSZnXAkQE.2gw4xFZn",
+        //client_secret: "8219049706333485472",
+        //redirect_uri: "https://localhost:8080/sessiontoken",
+        //code: authCode!)
+        
+        let myurl : String = "https://login.salesforce.com/services/oauth2/token?grant_type=authorization_code&client_id=3MVG9yZ.WNe6byQDinV4pEtYbk.XKrK3LwCNZtKCJ9lKnd6keoaNjuNXu7i3EBK_lLzNSZnXAkQE.2gw4xFZn&client_secret=8219049706333485472&redirect_uri=https://localhost:8080/sessiontoken&code=\(authCode!)"
+        
+        
+        let parameters: Parameters = [ "grant_type" : "authorization_code",
+                                       "client_id" : "3MVG9yZ.WNe6byQDinV4pEtYbk.XKrK3LwCNZtKCJ9lKnd6keoaNjuNXu7i3EBK_lLzNSZnXAkQE.2gw4xFZn",
+                                       "client_secret" : "8219049706333485472",
+                                       "redirect_uri" : "https://localhost:8080/sessiontoken",
+                                       "code" : authCode! ]
+        let urlString = "https://login.salesforce.com/services/oauth2/token"
+        let url = URL.init(string: urlString)
+        Alamofire.request(url!, method: .put, parameters: parameters, encoding: JSONEncoding.default, headers: nil).responseJSON { response in
+            switch response.result
+            {
+            case .success(let json):
+                let jsonData = json as! Any
+                print("### TOKE RSEULT: ")
+                print(jsonData)
+            case .failure(let error):
+                self.errorFailer(error: error)
+            }
         }
-        print("### RESPONSE: ")
-        print(res) // Future<Response>
+        
+        //let res = try req.client().send(.POST, to: urlString) { post in
+        //       try post.content.encode(tokenRequest)
+       // }
+        
+        //let reqTest: Request ...
+        
+        //let res = try req.client().send(tokenRequest)
+        
+        //let res = try req.client().post(urlString) { loginReq in
+            // encode the loginRequest before sending
+        //    try loginReq.content.encode(tokenRequest)
+        //}
+        print("### AFTER RESPONSE: ")
+        //print(res) // Future<Response>
         
         // Connect a new client to the supplied hostname.
         //let client = try req.client()
@@ -87,6 +119,14 @@ final class AuthDanceController {
         //let httpRes = try client.send(httpReq).wait()
         //print(httpRes) // HTTPResponse
         
-        return "Hello, Salesforce OAuth!"
+        return "Hello, Salesforce Code"
+        //return Future.map(on: req) {return req.redirect(to: myurl)}
+    }
+    
+    func sftoken(_ req: Request) throws -> String {
+        print("### TEST: ")
+        print(req)
+    
+        return "Hello, Salesforce OAuth Session!"
     }
 }

@@ -22,5 +22,6 @@ public func routes(_ router: Router) throws {
     let authController = AuthDanceController()
     router.get("sfauth", use: authController.sfauth)
     router.get("authresult", use: authController.sfcallback)
+    router.post("sessiontoken", use: authController.sftoken)
     
 }
