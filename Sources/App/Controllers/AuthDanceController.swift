@@ -6,7 +6,6 @@
 //
 
 import Vapor
-import Alamofire
 
 final class AuthDanceController {
     
@@ -50,7 +49,7 @@ final class AuthDanceController {
         return Future.map(on: req) {return req.redirect(to: myurl)}
     }
     
-    func sfcallback(_ req: Request) throws -> Future<Response> {
+    func sfcallback(_ req: Request) throws -> String {
         print("### TEST: ")
         print(req)
         let flags = try req.query.decode(SFAuthCode.self)
@@ -60,19 +59,19 @@ final class AuthDanceController {
         
         
         // Assemble call to get access token
-        //let urlString = "https://login.salesforce.com/services/oauth2/token"
+        let urlString = "https://login.salesforce.com/services/oauth2/token"
         //var headers = HTTPHeaders()
         //headers.add(name: "Content-Type", value: "application/json")
         
-        //let tokenRequest = SFTokenRequest(grant_type: "authorization_code",
-        //client_id: "3MVG9yZ.WNe6byQDinV4pEtYbk.XKrK3LwCNZtKCJ9lKnd6keoaNjuNXu7i3EBK_lLzNSZnXAkQE.2gw4xFZn",
-        //client_secret: "8219049706333485472",
-        //redirect_uri: "https://localhost:8080/sessiontoken",
-        //code: authCode!)
+        let tokenRequest = SFTokenRequest(grant_type: "authorization_code",
+        client_id: "3MVG9yZ.WNe6byQDinV4pEtYbk.XKrK3LwCNZtKCJ9lKnd6keoaNjuNXu7i3EBK_lLzNSZnXAkQE.2gw4xFZn",
+        client_secret: "8219049706333485472",
+        redirect_uri: "https://localhost:8080/sessiontoken",
+        code: authCode!)
         
         let myurl : String = "https://login.salesforce.com/services/oauth2/token?grant_type=authorization_code&client_id=3MVG9yZ.WNe6byQDinV4pEtYbk.XKrK3LwCNZtKCJ9lKnd6keoaNjuNXu7i3EBK_lLzNSZnXAkQE.2gw4xFZn&client_secret=8219049706333485472&redirect_uri=https://localhost:8080/sessiontoken&code=\(authCode!)"
         
-        
+        /*
         let parameters: Parameters = [ "grant_type" : "authorization_code",
                                        "client_id" : "3MVG9yZ.WNe6byQDinV4pEtYbk.XKrK3LwCNZtKCJ9lKnd6keoaNjuNXu7i3EBK_lLzNSZnXAkQE.2gw4xFZn",
                                        "client_secret" : "8219049706333485472",
@@ -91,6 +90,7 @@ final class AuthDanceController {
                 self.errorFailer(error: error)
             }
         }
+        */
         
         //let res = try req.client().send(.POST, to: urlString) { post in
         //       try post.content.encode(tokenRequest)
@@ -100,12 +100,17 @@ final class AuthDanceController {
         
         //let res = try req.client().send(tokenRequest)
         
-        //let res = try req.client().post(urlString) { loginReq in
+        let res = try req.client().post(urlString) { loginReq in
             // encode the loginRequest before sending
-        //    try loginReq.content.encode(tokenRequest)
-        //}
+            print("### INSIDE POST")
+            try loginReq.content.encode(tokenRequest)
+        }
         print("### AFTER RESPONSE: ")
-        //print(res) // Future<Response>
+        print(res) // Future<Response>
+        //let decoded = try res.content.syncDecode(JSONEncoder.default)
+        
+        //print("token:\(decoded.token)")
+        
         
         // Connect a new client to the supplied hostname.
         //let client = try req.client()
