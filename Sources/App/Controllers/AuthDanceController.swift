@@ -92,19 +92,19 @@ final class AuthDanceController {
         }
         */
         
-        //let res = try req.client().send(.POST, to: urlString) { post in
-        //       try post.content.encode(tokenRequest)
-       // }
+        let res = try req.client().send(.POST, to: urlString) { post in
+               try post.content.encode(tokenRequest)
+        }
         
         //let reqTest: Request ...
         
         //let res = try req.client().send(tokenRequest)
         
-        let res = try req.client().post(urlString) { loginReq in
+        //let res = try req.client().post(urlString) { loginReq in
             // encode the loginRequest before sending
-            print("### INSIDE POST")
-            try loginReq.content.encode(tokenRequest)
-        }
+        //    print("### INSIDE POST")
+        //    try loginReq.content.encode(tokenRequest)
+        //}
         print("### AFTER RESPONSE: ")
         print(res) // Future<Response>
         //let decoded = try res.content.syncDecode(JSONEncoder.default)
